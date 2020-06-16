@@ -18,13 +18,11 @@ class TimeFormatter
     @unknown_params.empty?
   end
 
-  def error_response
-    [400, { 'Content-type' => 'text/plain' }, ["Unknown time format #{@unknown_params}\n"]]
+  def error_message
+    "Unknown time format #{@unknown_params}\n"
   end
 
-  def success_response
-    [200,
-     { 'Content-type' => 'text/plain' },
-     [Time.now.strftime(@params.map { |param| KNOWN_PARAMS[param] }.join('-')) + "\n" ]]
+  def success_message
+    Time.now.strftime(@params.map { |param| KNOWN_PARAMS[param] }.join('-')) + "\n"
   end
 end
