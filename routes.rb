@@ -1,5 +1,7 @@
 class Routes
 
+  KNOWN_ROUTES = { '/time' => { :methods => ['GET'], :service => TimeFormatter }}
+
   def initialize(app)
     @app = app
   end
@@ -7,14 +9,16 @@ class Routes
   def call(env)
     return not_found unless corresponding_request?(env)
     
-    @app.call(env)
+    @app.call(env, KNOWN_ROUTES[env['REQUEST_PATH']][:service].new(env))
   end
 
   private
 
   def corresponding_request?(env)
-    env['REQUEST_PATH'].eql?('/time') &&
-     env['REQUEST_METHOD'].eql?('GET')
+    path = env['REQUEST_PATH']
+    method = env['REQUEST_METHOD']
+
+    KNOWN_ROUTES[path] && KNOWN_ROUTES[path][:methods].include?(method)
   end
 
   def not_found
